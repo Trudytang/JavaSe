@@ -53,3 +53,11 @@ entrySet() 方法返回 Map.Entry<String, Integer> 对象的集合，每个 entr
 性能更优（只遍历一次 Map）。
 直接访问 entry.getKey() 和 entry.getValue()，避免额外的 get() 操作。
 
+split(" ")：
+
+这个方法将字符串按照指定的分隔符（这里是空格 " "）进行分割。
+分割后的每一部分会成为数组中的一个元素。
+String[] words = ...：
+
+这个部分将分割后的结果存储在一个字符串数组 words 中。
+
