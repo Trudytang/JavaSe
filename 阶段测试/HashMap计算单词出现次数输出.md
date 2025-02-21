@@ -43,8 +43,13 @@ public class WordCount {
 }
 
 知识点:
-
-方式	可读性	性能	适用场景
-entrySet()	✅ 更直观，直接获取 key-value	✅ 更快（只遍历一次）	推荐 ✅
-keySet()	还可以，但 get(key) 额外操作	❌ 较慢（需要多次 get()）	仅在 只需要 key 的情况下使用
+另一种遍历:
+for(String word:wordCountMap.keySet()){
+            System.out.println(word+" "+wordCountMap.get(word));
+        }
+        
+entrySet() 方法返回 Map.Entry<String, Integer> 对象的集合，每个 entry 代表 key-value 对。
+优点：
+性能更优（只遍历一次 Map）。
+直接访问 entry.getKey() 和 entry.getValue()，避免额外的 get() 操作。
 
