@@ -20,19 +20,25 @@ CROSS JOIN
 下面是完整代码：
 
 SELECT 
-    s.student_id, s.student_name, sub.subject_name, IFNULL(grouped.attended_exams, 0) AS attended_exams
+    s.student_id,               -- 显示学生的 ID
+    s.student_name,             -- 显示学生的名字
+    sub.subject_name,           -- 显示科目的名字
+    IFNULL(grouped.attended_exams, 0) AS attended_exams  -- 显示参加考试的次数，如果没有参加则显示 0
 FROM 
-    Students s
+    Students s                  -- 从 Students 表中选择学生
 CROSS JOIN 
-    Subjects sub
+    Subjects sub                -- 与 Subjects 表进行笛卡尔积连接，生成每个学生与每个科目的组合
 LEFT JOIN (
     SELECT student_id, subject_name, COUNT(*) AS attended_exams
-    FROM Examinations
-    GROUP BY student_id, subject_name
+    FROM Examinations           -- 统计每个学生参加了多少次某个科目的考试
+    GROUP BY student_id, subject_name   -- 按照学生ID和科目名称分组
 ) grouped 
-ON s.student_id = grouped.student_id AND sub.subject_name = grouped.subject_name
-ORDER BY s.student_id, sub.subject_name;
+ON s.student_id = grouped.student_id AND sub.subject_name = grouped.subject_name  -- 连接条件：学生ID和科目名称匹配
+ORDER BY s.student_id, sub.subject_name;  -- 按照学生ID和科目名称排序
 
+IFNULL(expression, replacement_value)
+expression：这是需要检查是否为 NULL 的值或表达式。
+replacement_value：当 expression 为 NULL 时，IFNULL 会返回此值。
 
  COUNT(*) vs COUNT(column_name)：
 COUNT(*) 计算的是所有行的数量，包括列值为 NULL 的行。
