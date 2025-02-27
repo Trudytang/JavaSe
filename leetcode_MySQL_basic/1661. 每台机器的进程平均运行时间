@@ -1,0 +1,13 @@
+答案
+select a1.machine_id,round(avg(a2.timestamp-a1.timestamp),3) as 'processing_time'
+from Activity as a1 inner join Activity as a2
+on a1.machine_id=a2.machine_id
+and a1.process_id=a2.process_id
+and a1.activity_type='start' 
+and a2.Activity_type='end'
+group by a1.machine_id;
+
+内连接，自链接
+内连接（INNER JOIN）通常是用来连接 不同的表，根据某个条件返回两个表中匹配的记录，取交集。
+自连接（SELF JOIN）是内连接的一种特例，它用来连接 同一个表 的不同行，通常需要为同一个表起两个不同的别名。
+自连接常用于层级数据或需要在同一表中进行比较的场景（如员工与经理关系）。
