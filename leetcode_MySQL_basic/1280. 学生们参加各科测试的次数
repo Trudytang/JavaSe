@@ -1,0 +1,39 @@
+1.我们通过一个子查询创建了表 grouped，它统计每个学生参加每个科目的考试次数。
+
+SELECT 
+    student_id, subject_name, COUNT(*) AS attended_exams
+FROM 
+    Examinations
+GROUP BY 
+    student_id, subject_name
+2.为了获得 (student_id，subject_name) 的所有组合，我们使用交叉联接将表 Student 中的每一行与表 Subject 中的每一行组合在一起，从而得到两个表中的 student_id 和 subject_name 的所有可能组合。
+
+SELECT 
+    *
+FROM
+    Students s
+CROSS JOIN
+    Subjects sub
+3.接下来，我们对上面的表与表 grouped 执行左连接，使用 (student_id，subject_name) 对作为标识符来保留所有组合，同时合并两个表。
+类似地，在左连接之后， grouped.attended_exams 列可能有 null 值，我们使用 IFNULL() 函数将其替换为0。
+
+下面是完整代码：
+
+SELECT 
+    s.student_id, s.student_name, sub.subject_name, IFNULL(grouped.attended_exams, 0) AS attended_exams
+FROM 
+    Students s
+CROSS JOIN 
+    Subjects sub
+LEFT JOIN (
+    SELECT student_id, subject_name, COUNT(*) AS attended_exams
+    FROM Examinations
+    GROUP BY student_id, subject_name
+) grouped 
+ON s.student_id = grouped.student_id AND sub.subject_name = grouped.subject_name
+ORDER BY s.student_id, sub.subject_name;
+
+
+ COUNT(*) vs COUNT(column_name)：
+COUNT(*) 计算的是所有行的数量，包括列值为 NULL 的行。
+COUNT(column_name) 只统计该列非 NULL 的值的数量。
