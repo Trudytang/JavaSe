@@ -1,0 +1,39 @@
+DATEDIFF 是一个 SQL 函数，用于 计算两个日期之间的差异，返回的是它们之间的 天数差。通常，DATEDIFF 函数用来对比两个日期的时间间隔。
+
+DATEDIFF(date1, date2)
+date1：较晚的日期（结束日期）。
+date2：较早的日期（开始日期）。
+函数返回的是 date1 和 date2 之间的天数差。如果 date1 比 date2 晚，则结果为正数；如果 date1 比 date2 早，则结果为负数；如果两者相等，结果为 0。
+
+返回值：
+返回一个整数，表示两个日期之间的天数差。
+如果日期格式不正确，或者传入的日期值为空，则会返回 NULL。
+答案：
+select B.ID
+from weather a
+inner join weather b
+where datediff(b.recordDate,a.recordDate)=1
+AND B.TEMPERATURE>A.TEMPERATURE;（笛卡尔积的方法）
+
+本题还可以使用窗口函数：
+select id
+from
+    (select 
+        id,
+        temperature,
+        recordDate,
+        lag(recordDate,1) over(order by recordDate) as last_date,
+        lag(temperature,1) over(order by recordDate) as last_temperature
+    from Weather) a
+where temperature > last_temperature and datediff(recordDate, last_date) = 1
+
+LAG 是一个 窗口函数，用于获取当前行的前一行数据。在这个查询中，LAG 用来获取当前记录前一条记录的 日期 和 温度。
+LAG(column_name, offset) OVER (ORDER BY column)
+column_name：你想要获取前一行数据的列名。
+offset：表示偏移量，这里是 1，意味着获取 前一行的数据。
+OVER (ORDER BY column)：用于定义窗口，指定按哪个列的顺序来查看前一行数据。
+OVER (ORDER BY recordDate)：指定窗口顺序，按照 recordDate 排序，确保比较的前后记录是连续的。
+外部查询的 WHERE 子句：筛选出满足条件（温度上升且日期差为 1）的记录。
+LAG 函数和其它窗口函数（如 LEAD、ROW_NUMBER、RANK 等）通常是在 SQL 中 高级 的部分，通常需要更深入的 SQL 知识才能理解。
+很多 SQL 入门教程和书籍会专注于 基本的 SQL 语法（如 SELECT、JOIN、WHERE、GROUP BY 等），而不会马上讲解窗口函数。
+
